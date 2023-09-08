@@ -22,13 +22,15 @@ interface Props {
   } | null;
   createdAt: string;
   comments: {
-    author: {
+    author: { // this only shows who commented the thread and not the actual thread.
       image: string;
     };
   }[];
   isComment?: boolean;
 }
 
+
+// repost and the share functionality is pending .....
 function ThreadCard({
   id,
   currentUserId,
@@ -45,11 +47,14 @@ function ThreadCard({
       className={`flex w-full flex-col rounded-xl ${
         isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
       }`}
-    >
+    > 
+    {/* the above css use the dynamic condition in the class name , if there is a comment .. intresting */}
+
       <div className='flex items-start justify-between'>
         <div className='flex w-full flex-1 flex-row gap-4'>
           <div className='flex flex-col items-center'>
             <Link href={`/profile/${author.id}`} className='relative h-11 w-11'>
+             {/* profile image */}
               <Image
                 src={author.image}
                 alt='user_community_image'
@@ -57,17 +62,17 @@ function ThreadCard({
                 className='cursor-pointer rounded-full'
               />
             </Link>
-
+            {/* empty div to provide some spacing adding the line below the phofile photo in the thread card */}
             <div className='thread-card_bar' />
           </div>
-
+          {/* author name */}
           <div className='flex w-full flex-col'>
             <Link href={`/profile/${author.id}`} className='w-fit'>
               <h4 className='cursor-pointer text-base-semibold text-light-1'>
                 {author.name}
               </h4>
             </Link>
-
+            {/* content of the thread */}
             <p className='mt-2 text-small-regular text-light-2'>{content}</p>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
@@ -79,10 +84,12 @@ function ThreadCard({
                   height={24}
                   className='cursor-pointer object-contain'
                 />
+                
+                 {/* it is going to point on the details of the thread so that i can comment on it . */}
                 <Link href={`/thread/${id}`}>
                   <Image
                     src='/assets/reply.svg'
-                    alt='heart'
+                    alt='reply'
                     width={24}
                     height={24}
                     className='cursor-pointer object-contain'
@@ -104,6 +111,8 @@ function ThreadCard({
                 />
               </div>
 
+                {/* in the thread ,,,the comment is also a thread so if there is a comment link to the another thread  */}
+
               {isComment && comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className='mt-1 text-subtle-medium text-gray-1'>
@@ -115,6 +124,8 @@ function ThreadCard({
           </div>
         </div>
 
+
+{/* delete the threads */}
         <DeleteThread
           threadId={JSON.stringify(id)}
           currentUserId={currentUserId}
@@ -123,6 +134,8 @@ function ThreadCard({
           isComment={isComment}
         />
       </div>
+
+      {/* show comment logos */}
 
       {!isComment && comments.length > 0 && (
         <div className='ml-1 mt-3 flex items-center gap-2'>
@@ -144,6 +157,8 @@ function ThreadCard({
           </Link>
         </div>
       )}
+
+{/* !isComment && community &&      */}
 
       {!isComment && community && (
         <Link

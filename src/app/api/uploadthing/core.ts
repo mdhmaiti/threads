@@ -7,7 +7,7 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 const f = createUploadthing();
 
-const getUser = async () => await currentUser();
+const getUser = async () => await currentUser();// middle ware
 
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
@@ -15,7 +15,7 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async (req) => {
       // This code runs on your server before upload
-      const user = await getUser();
+      const user = await getUser();// if u are authorized then u can upload your files
 
       // If you throw, the user will not be able to upload
       if (!user) throw new Error("Unauthorized");

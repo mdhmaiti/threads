@@ -33,6 +33,7 @@ interface Params {
   path: string;
 }
 
+// this function of the backend is for the user profile( update the user profile). 
 export async function updateUser({
   userId,
   bio,
@@ -53,11 +54,11 @@ export async function updateUser({
         image,
         onboarded: true,
       },
-      { upsert: true }
+      { upsert: true }// update and insert , if the user changes its value or something
     );
 
     if (path === "/profile/edit") {
-      revalidatePath(path);
+      revalidatePath(path);// it prevents the full reload and only reloads the components. 
     }
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
@@ -155,6 +156,10 @@ export async function fetchUsers({
   }
 }
 
+// activity sections for the search implementations..
+// this whole thing is difficult to understand ask the chat gpt 
+// this  functions helps someone to find all the comments they received from their post 
+//from others on a computer and shows them to the person. and if there is a problem it shows something is wrong  
 export async function getActivity(userId: string) {
   try {
     connectToDB();

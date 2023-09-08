@@ -38,6 +38,7 @@ function PostThread({ userId }: Props) {
     },
   });
 
+  // after clicking the on submit everything is handles by the backend called the create threads, function defined in the thread.actions                          
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
     await createThread({
       text: values.thread,
@@ -72,8 +73,9 @@ function PostThread({ userId }: Props) {
         />
 
         <Button type='submit' className='bg-primary-500'>
-          Post Thread
+          Post Thread 
         </Button>
+        {/* upon clicking the button it triggers the submit that is the on submit option  */}
       </form>
     </Form>
   );

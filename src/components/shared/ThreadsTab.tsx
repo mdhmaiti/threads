@@ -54,6 +54,7 @@ async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
   return (
     <section className='mt-9 flex flex-col gap-10'>
       {result.threads.map((thread) => (
+        // inside the account type we verify if the inside the db and is a verified user
         <ThreadCard
           key={thread._id}
           id={thread._id}

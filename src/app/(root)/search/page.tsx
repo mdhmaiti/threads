@@ -18,6 +18,11 @@ async function Page({
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+
+
+// fetch users
+
+
   const result = await fetchUsers({
     userId: user.id,
     searchString: searchParams.q,
@@ -29,6 +34,8 @@ async function Page({
     <section>
       <h1 className='head-text mb-10'>Search</h1>
 
+{/* render a  search bar */}
+
       <Searchbar routeType='search' />
 
       <div className='mt-14 flex flex-col gap-9'>
@@ -37,6 +44,8 @@ async function Page({
         ) : (
           <>
             {result.users.map((person) => (
+
+              // user card component from the components 
               <UserCard
                 key={person.id}
                 id={person.id}

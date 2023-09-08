@@ -9,7 +9,8 @@ import Thread from "../models/thread.model";
 import Community from "../models/community.model";
 
 
-
+// in the home page we want to show our post , so we have to fetch our threads
+// note:*** this fetches a group of post, and not the individials.***
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
 
@@ -30,7 +31,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
       model: Community,
     })
     .populate({
-      path: "children", // Populate the children field
+      path: "children", // Populate the children field, this is basically the comments 
       populate: {
         path: "author", // Populate the author field within children
         model: User,
@@ -45,7 +46,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
   const posts = await postsQuery.exec();
 
-  const isNext = totalPostsCount > skipAmount + posts.length;
+  const isNext = totalPostsCount > skipAmount + posts.length; // to check the next page 
 
   return { posts, isNext };
 }
@@ -57,6 +58,8 @@ interface Params {
   path: string,
 }
 
+// this function is triggered after clicking the submit button and is handled by the on submit in the create- thread folder.
+// the thread is defined in the mongo db model and it is actually stored in the db.
 export async function createThread({ text, author, communityId, path }: Params
 ) {
   try {
@@ -74,6 +77,7 @@ export async function createThread({ text, author, communityId, path }: Params
     });
 
     // Update User model
+    // "created a thread then push it to the user who created it "
     await User.findByIdAndUpdate(author, {
       $push: { threads: createdThread._id },
     });
@@ -159,11 +163,14 @@ export async function deleteThread(id: string, path: string): Promise<void> {
   }
 }
 
-export async function fetchThreadById(threadId: string) {
+//
+// note: **   THIS FETCHES A SINGLE THREAD BY THEIR RESPECTABLE ID  WHICH IS USED IN THE threads/[id]
+
+export async function fetchThreadById(id: string) {
   connectToDB();
 
   try {
-    const thread = await Thread.findById(threadId)
+    const thread = await Thread.findById(id)
       .populate({
         path: "author",
         model: User,
@@ -202,6 +209,8 @@ export async function fetchThreadById(threadId: string) {
   }
 }
 
+// this is the back end of the add comment of the component of the form comment .
+
 export async function addCommentToThread(
   threadId: string,
   commentText: string,
@@ -218,17 +227,22 @@ export async function addCommentToThread(
       throw new Error("Thread not found");
     }
 
-    // Create the new comment thread
+    // Create the new comment thread... we already have the model so we just have to create a new instance and have the comment .
+    // note the comment is a thread and the thread is a comment 
+    // so having a new instance of a thread makes sense 
     const commentThread = new Thread({
       text: commentText,
       author: userId,
       parentId: threadId, // Set the parentId to the original thread's ID
     });
 
-    // Save the comment thread to the database
+    // note : the new instance does not get saved automatically , so we have to save the comment .
+
+    // Save the comment thread to the database -> saved the new instance of the thread.
     const savedCommentThread = await commentThread.save();
 
     // Add the comment thread's ID to the original thread's children array
+    // only the id is saved and it is passed as its children .
     originalThread.children.push(savedCommentThread._id);
 
     // Save the updated original thread to the database
@@ -240,3 +254,6 @@ export async function addCommentToThread(
     throw new Error("Unable to add comment");
   }
 }
+
+// the back end sucessfully works and to load the comment below the original thread 
+// modify the thread in the page .tsx in the thread.

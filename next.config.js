@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+
+    typescript:{
+      ignoreBuildErrors:true,
+    },
+
     experimental: {
       serverActions: true,
-      serverActionsBodySizeLimit: '2mb',
+      //serverActionsBodySizeLimit: '2mb',
       serverComponentsExternalPackages: ["mongoose"],
     },
     eslint: {

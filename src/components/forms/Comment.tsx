@@ -36,6 +36,7 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
     },
   });
 
+  // like we have done previouly after in submit form it just triggers the back end.
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
     await addCommentToThread(
       threadId,

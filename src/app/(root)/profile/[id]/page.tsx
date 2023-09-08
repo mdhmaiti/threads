@@ -18,7 +18,9 @@ async function Page({ params }: { params: { id: string } }) {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   return (
-    <section>
+    <section className=" mt-9 flex flex-col gap-10">
+      {/* the account id and the auth user id is fetched differently because  */}
+      {/* it helps to figue if the current user is the logged in user  */}
       <ProfileHeader
         accountId={userInfo.id}
         authUserId={user.id}
@@ -29,8 +31,11 @@ async function Page({ params }: { params: { id: string } }) {
       />
 
       <div className='mt-9'>
+
+        {/* tabs comming from the shad cn  */}
         <Tabs defaultValue='threads' className='w-full'>
           <TabsList className='tab'>
+            {/* the profile tab is comming from the constants folder */}
             {profileTabs.map((tab) => (
               <TabsTrigger key={tab.label} value={tab.value} className='tab'>
                 <Image
@@ -44,7 +49,7 @@ async function Page({ params }: { params: { id: string } }) {
 
                 {tab.label === "Threads" && (
                   <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2'>
-                    {userInfo.threads.length}
+                    {userInfo?.threads?.length}
                   </p>
                 )}
               </TabsTrigger>
@@ -56,7 +61,7 @@ async function Page({ params }: { params: { id: string } }) {
               value={tab.value}
               className='w-full text-light-1'
             >
-              {/* @ts-ignore */}
+              {/* this is comming from the shared component section  */}
               <ThreadsTab
                 currentUserId={user.id}
                 accountId={userInfo.id}

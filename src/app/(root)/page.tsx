@@ -8,6 +8,8 @@ import Pagination from "@/components/shared/Pagination";
 import { fetchPosts } from "@/lib/actions/thread.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 
+
+// the home page shows the thread card and the pagenums
 async function Home({
   searchParams,
 }: {
@@ -37,7 +39,7 @@ async function Home({
               <ThreadCard
                 key={post._id}
                 id={post._id}
-                currentUserId={user.id}
+                currentUserId={user?.id || ""}
                 parentId={post.parentId}
                 content={post.text}
                 author={post.author}

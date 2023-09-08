@@ -40,11 +40,15 @@ interface Props {
 const AccountProfile = ({ user, btnTitle }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { startUpload } = useUploadThing("media");
+  const { startUpload } = useUploadThing("media");// upload thing is a hook.
 
+  // this use state is to make the image upload work .
   const [files, setFiles] = useState<File[]>([]);
 
-  const form = useForm<z.infer<typeof UserValidation>>({
+
+  //either use the <z.infer<typeof UserValidations>> after the use form as their type or just use the resolver , they will work the same.
+
+  const form = useForm({
     resolver: zodResolver(UserValidation),
     defaultValues: {
       profile_photo: user?.image ? user.image : "",
@@ -55,17 +59,23 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
+
+    
+    // usually the value of the image is called the blob , it is more of an technical term.
+    // the profile photo is comming from the form field in the react hook form .
+    // name = "profile_photo "
     const blob = values.profile_photo;
 
-    const hasImageChanged = isBase64Image(blob);
+    const hasImageChanged = isBase64Image(blob);// check if the values is in png /jpeg etc
+    // the above boolean is devined the the validations
     if (hasImageChanged) {
-      const imgRes = await startUpload(files);
+      const imgRes = await startUpload(files);// if itn is an image of the desired typr upload the files -> use the hook 
 
       if (imgRes && imgRes[0].fileUrl) {
         values.profile_photo = imgRes[0].fileUrl;
       }
     }
-
+  // upadate the user profile 
     await updateUser({
       name: values.name,
       path: pathname,
@@ -81,13 +91,20 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       router.push("/");
     }
   };
-
+// how to pick up the img from the desktop .
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
     fieldChange: (value: string) => void
   ) => {
+    // it helps to prevent the browser to reload.
+    // field change does not return any value so it is void.
+    // use the docs .
     e.preventDefault();
-
+    
+    
+    // file reader is a built in  fuction to read the file, check the mdn docs.
+    //If you were to reuse the same FileReader instance for multiple files, it could lead to conflicts and unexpected behavior.
+    // Each FileReader instance keeps track of its own state, such as the file being read and the progress of the operation.
     const fileReader = new FileReader();
 
     if (e.target.files && e.target.files.length > 0) {
@@ -98,12 +115,17 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
 
       fileReader.onload = async (event) => {
         const imageDataUrl = event.target?.result?.toString() || "";
+       // field change is comming from the react hook form.
         fieldChange(imageDataUrl);
       };
-
+      // pass the file that is uploaded in the state to the new instance of the file reader.
       fileReader.readAsDataURL(file);
     }
   };
+
+  // note: the file reader handle image thing only implements that you can choose your file from your computer 
+  // the handle image fuction does not do the job of showing the image on the website , 
+  // the onsubmit is responsible for the uploaded image on the site 
 
   return (
     <Form {...form}>
@@ -117,6 +139,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
           render={({ field }) => (
             <FormItem className='flex items-center gap-4'>
               <FormLabel className='account-form_image-label'>
+                {/* the priority tag in the image in the nexrt js is a must ,it just makesn it high priority and preload the things, lazy loading is automatically disables for the image priority  */}
                 {field.value ? (
                   <Image
                     src={field.value}

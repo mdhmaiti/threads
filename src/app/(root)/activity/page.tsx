@@ -12,6 +12,8 @@ async function Page() {
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+
+  // the dangerous get activity function
   const activity = await getActivity(userInfo._id);
 
   return (
@@ -19,14 +21,15 @@ async function Page() {
       <h1 className='head-text'>Activity</h1>
 
       <section className='mt-10 flex flex-col gap-5'>
+        {/* if there is an activity its length >0  create a link that is pointing towards the comment ".." */}
         {activity.length > 0 ? (
           <>
             {activity.map((activity) => (
-              <Link key={activity._id} href={`/thread/${activity.parentId}`}>
+              <Link key={activity._id} href={`../thread/${activity.parentId}`}>
                 <article className='activity-card'>
                   <Image
                     src={activity.author.image}
-                    alt='user_logo'
+                    alt='Profile Picture'
                     width={20}
                     height={20}
                     className='rounded-full object-cover'

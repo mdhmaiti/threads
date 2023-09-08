@@ -1,3 +1,5 @@
+
+
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 
@@ -9,20 +11,27 @@ import { fetchThreadById } from "@/lib/actions/thread.actions";
 
 export const revalidate = 0;
 
+
+// it is a dynamic thread page with their own respectable id.
 async function page({ params }: { params: { id: string } }) {
   if (!params.id) return null;
 
+  // if we have a params id then we also have a user who have gone throught the authentication process properly.
+  // take the user from the clerk 
   const user = await currentUser();
   if (!user) return null;
-
+// fetch the individual user using their id .
   const userInfo = await fetchUser(user.id);
+  // if ytou cannot find the user info damm .. make your account properly. 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const thread = await fetchThreadById(params.id);
+  // these thread are the post ,posted by the user
+  const thread = await fetchThreadById(params.id); // fetch each thread by their id 
 
   return (
     <section className='relative'>
       <div>
+        {/* these thread are the post data */}
         <ThreadCard
           id={thread._id}
           currentUserId={user.id}
@@ -36,9 +45,10 @@ async function page({ params }: { params: { id: string } }) {
       </div>
 
       <div className='mt-7'>
+        {/* params.is  note : the userInfo is from the database and the user is from the clerk*/}
         <Comment
-          threadId={params.id}
-          currentUserImg={user.imageUrl}
+          threadId={thread.id}
+          currentUserImg={userInfo.image}
           currentUserId={JSON.stringify(userInfo._id)}
         />
       </div>

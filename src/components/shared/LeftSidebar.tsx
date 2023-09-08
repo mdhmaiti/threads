@@ -1,6 +1,6 @@
 "use client"
 import { sidebarLinks } from "@/constants";
-import { SignOutButton, SignedIn } from "@clerk/nextjs";
+import { SignOutButton, SignedIn,useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ const Leftsidebar = () => {
   //defining
   const router = useRouter();
   const pathname = usePathname();
+  const {userId} = useAuth(); // use auth hook from the clerk
 
   return (
     <section className="custom-scrollbar leftsidebar">
@@ -18,6 +19,13 @@ const Leftsidebar = () => {
           const isActive =
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
+
+            //fixing the profile link as it should point towards the id and not just the profile.
+
+          if(link.route === "/profile"){
+            link.route = `${link.route}/${userId}`
+          }
+
           return (
             // making the class name to do things dynamically ; temolate strings
             <Link
