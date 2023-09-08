@@ -22,6 +22,10 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Folder Stuucture
+
+The structure is simple. The app is divided into the root and the auth section . Both have their individual layout. It also has an api section which contains the upload things implementations and the web hooks . The components folder is inside the app and is in the src directory , and is divided into various structure.The actions are inside the lib folder which is "server actions" of the next js.
+
 ## Features
 
 There are many features and tech stack of the app .
